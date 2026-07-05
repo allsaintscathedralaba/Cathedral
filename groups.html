@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saint Groups | All Saints' Cathedral Abayi-Umuocham</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Sticky Navbar Injection Point -->
+  <div id="header-root"></div>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="glow-bg" style="top: 10%; left: 15%; background: var(--primary-orange);"></div>
+    <div class="container" style="position: relative; z-index: 10; display: flex; flex-direction: column; gap: 16px; max-width: 800px;">
+      <span class="badge badge-orange" style="margin: 0 auto;">Fellowships</span>
+      <h1 style="font-family: var(--font-serif); font-size: 48px; font-weight: 800;">
+        Cathedral Saint Groups
+      </h1>
+      <p style="font-size: 14px; color: #E2E8F0; max-width: 600px; margin: 0 auto;">
+        All Cathedral members belong to one of our 10 dynamic Saint Groups based on house blocks or fellowships.
+      </p>
+    </div>
+  </section>
+
+  <!-- Groups directory -->
+  <section class="section-padding">
+    <div class="container">
+      <div class="text-center" style="margin-bottom: 50px;">
+        <h2 style="font-size: 32px;">Browse Our Saint Fellowships</h2>
+        <p style="max-width: 600px; margin: 10px auto 0; font-size: 14px; color: var(--text-light);">
+          Every member is encouraged to join their active group meetings, pray together, and support one another.
+        </p>
+      </div>
+
+      <div class="grid-3" id="groups-grid">
+        <!-- Rendered dynamically by script -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer Injection Point -->
+  <div id="footer-root"></div>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="components.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const groups = window.CathedralDB.getGroups();
+      const grid = document.getElementById('groups-grid');
+      
+      if (grid) {
+        grid.innerHTML = groups.map((g, idx) => {
+          // Use indices for unique backgrounds or colors
+          const backgrounds = [
+            'linear-gradient(to bottom right, rgba(233,91,42,0.08), rgba(233,91,42,0.02))',
+            'linear-gradient(to bottom right, rgba(13,155,67,0.08), rgba(13,155,67,0.02))',
+            'linear-gradient(to bottom right, rgba(31,94,169,0.08), rgba(31,94,169,0.02))'
+          ];
+          const bg = backgrounds[idx % backgrounds.length];
+          const badgeClass = idx % 3 === 0 ? 'badge-orange' : idx % 3 === 1 ? 'badge-green' : 'badge-blue';
+
+          return `
+            <div class="card" style="background: ${bg}; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+              <div>
+                <span class="badge ${badgeClass}" style="margin-bottom: 12px;">Active Fellowship</span>
+                <h3 style="font-size: 22px; margin-bottom: 8px; font-family: var(--font-serif);">${g.name}</h3>
+                <p style="font-size: 11px; font-weight: 700; color: var(--text-light); text-transform: uppercase; margin-bottom: 12px;">Patron: ${g.saintName}</p>
+                <p style="font-size: 13px; color: var(--text-slate); margin-bottom: 24px; line-height: 1.6;">${g.saintDescription.slice(0, 140)}…</p>
+              </div>
+              <a href="group-detail.html?id=${g.id}" class="btn btn-outline" style="width: 100%;">View Fellowship Profile</a>
+            </div>
+          `;
+        }).join('');
+      }
+    });
+  </script>
+</body>
+</html>

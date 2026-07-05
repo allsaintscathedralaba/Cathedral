@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sermons Library | All Saints' Cathedral Abayi-Umuocham</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Sticky Navbar Injection Point -->
+  <div id="header-root"></div>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="glow-bg" style="top: 10%; left: 15%; background: var(--primary-blue);"></div>
+    <div class="container" style="position: relative; z-index: 10; display: flex; flex-direction: column; gap: 16px; max-width: 800px;">
+      <span class="badge badge-orange" style="margin: 0 auto;">Spiritual Nourishment</span>
+      <h1 style="font-family: var(--font-serif); font-size: 48px; font-weight: 800;">
+        Sermons & Bible Studies
+      </h1>
+      <p style="font-size: 14px; color: #E2E8F0; max-width: 600px; margin: 0 auto;">
+        Access weekly scriptures, outlines, sermon transcripts, and theological reviews.
+      </p>
+    </div>
+  </section>
+
+  <!-- Search and filters -->
+  <section class="section-padding" style="padding-bottom: 20px; background-color: var(--bg-white);">
+    <div class="container" style="display: flex; flex-direction: column; gap: 20px;">
+      <div style="position: relative; width: 100%;">
+        <input type="text" id="search-input" placeholder="Search sermons by title, speaker, topic, or scripture…" style="width: 100%; padding: 16px 20px; border: 1.5px solid var(--border-light); border-radius: var(--radius); font-size: 14px; outline: none;">
+      </div>
+      
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;" id="category-filters">
+        <button class="btn btn-primary" onclick="filterCategory('All')" id="btn-cat-All" style="padding: 8px 16px; font-size: 11px; font-family: var(--font-sans);">All</button>
+        <button class="btn btn-outline" onclick="filterCategory('Wermon')" id="btn-cat-Wermon" style="padding: 8px 16px; font-size: 11px; font-family: var(--font-sans);">Sermons</button>
+        <button class="btn btn-outline" onclick="filterCategory('Bible Study')" id="btn-cat-BibleStudy" style="padding: 8px 16px; font-size: 11px; font-family: var(--font-sans);">Bible Study</button>
+        <button class="btn btn-outline" onclick="filterCategory('Article')" id="btn-cat-Article" style="padding: 8px 16px; font-size: 11px; font-family: var(--font-sans);">Articles</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sermons listing -->
+  <section class="section-padding" style="background-color: var(--bg-grey);">
+    <div class="container">
+      <div class="grid-3" id="sermons-grid">
+        <!-- Filled in dynamically -->
+      </div>
+      <div id="no-results" class="text-center" style="display: none; padding: 40px 0;">
+        <p style="font-size: 16px; color: var(--text-light);">No sermons found matching your criteria.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sermon Reading Modal -->
+  <div id="sermon-modal" class="modal">
+    <div class="modal-content" style="max-width: 800px;">
+      <button class="modal-close" onclick="closeSermonModal()">&times;</button>
+      
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <span class="badge badge-orange" id="modal-category" style="width: fit-content;">Sermon</span>
+        <h2 id="modal-title" style="font-size: 32px; line-height: 1.2;">Sermon Title</h2>
+        
+        <div style="display: flex; gap: 16px; font-size: 12px; color: var(--text-light); border-bottom: 1px solid var(--border-light); padding-bottom: 16px;">
+          <p>👤 <span id="modal-speaker">Speaker</span></p>
+          <p>📖 <span id="modal-scripture">Scripture</span></p>
+          <p>📅 <span id="modal-date">Date</span></p>
+        </div>
+        
+        <p id="modal-text" style="font-size: 14px; line-height: 1.8; color: var(--text-dark); white-space: pre-line; margin-top: 10px;"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Injection Point -->
+  <div id="footer-root"></div>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="components.js"></script>
+  <script>
+    let activeCategory = 'All';
+    let searchQuery = '';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderSermons();
+
+      // Setup search input
+      document.getElementById('search-input').addEventListener('input', (e) => {
+        searchQuery = e.target.value.toLowerCase();
+        renderSermons();
+      });
+    });
+
+    function filterCategory(cat) {
+      activeCategory = cat;
+      
+      // Update buttons style
+      const filters = ['All', 'Wermon', 'Bible Study', 'Article'];
+      filters.forEach(f => {
+        const btnId = 'btn-cat-' + f.replace(' ', '');
+        const btn = document.getElementById(btnId);
+        if (btn) {
+          if (f === cat) {
+            btn.className = 'btn btn-primary';
+          } else {
+            btn.className = 'btn btn-outline';
+          }
+        }
+      });
+
+      renderSermons();
+    }
+
+    function renderSermons() {
+      const sermons = window.CathedralDB.getSermons();
+      const grid = document.getElementById('sermons-grid');
+      const noResults = document.getElementById('no-results');
+      
+      const filtered = sermons.filter(s => {
+        const matchesCat = activeCategory === 'All' || s.category === activeCategory;
+        const matchesSearch = s.title.toLowerCase().includes(searchQuery) ||
+                            s.speaker.toLowerCase().includes(searchQuery) ||
+                            s.scripture.toLowerCase().includes(searchQuery) ||
+                            s.summary.toLowerCase().includes(searchQuery);
+        return matchesCat && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        noResults.style.display = 'block';
+        return;
+      }
+      
+      noResults.style.display = 'none';
+      grid.innerHTML = filtered.map(s => `
+        <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <span class="badge ${s.category === 'Wermon' ? 'badge-orange' : 'badge-blue'}">${s.category === 'Wermon' ? 'Sermon' : s.category}</span>
+              <p style="font-size: 11px; color: var(--text-light);">${s.readingTime}</p>
+            </div>
+            <h3 style="font-size: 18px; margin-bottom: 6px;">${s.title}</h3>
+            <p style="font-size: 11px; font-weight: 700; color: var(--primary-blue); margin-bottom: 12px;">${s.speaker} | ${s.scripture}</p>
+            <p style="font-size: 13px; color: var(--text-slate); line-height: 1.6; margin-bottom: 24px;">${s.summary}</p>
+          </div>
+          <button onclick="openSermon('${s.id}')" class="btn btn-secondary" style="width: 100%;">Read Transcript</button>
+        </div>
+      `).join('');
+    }
+
+    function openSermon(id) {
+      // Track download metric
+      window.CathedralDB.trackMetric('sermonDownloads');
+
+      const sermons = window.CathedralDB.getSermons();
+      const sermon = sermons.find(s => s.id === id);
+      
+      if (sermon) {
+        document.getElementById('modal-title').innerText = sermon.title;
+        document.getElementById('modal-speaker').innerText = sermon.speaker;
+        document.getElementById('modal-scripture').innerText = sermon.scripture;
+        document.getElementById('modal-date').innerText = new Date(sermon.date).toLocaleDateString('en-NG', { day: 'numeric', month: 'long', year: 'numeric' });
+        document.getElementById('modal-category').innerText = sermon.category === 'Wermon' ? 'Sermon' : sermon.category;
+        document.getElementById('modal-text').innerText = sermon.fullArticle;
+        
+        document.getElementById('sermon-modal').classList.add('active');
+      }
+    }
+
+    function closeSermonModal() {
+      document.getElementById('sermon-modal').classList.remove('active');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Group Fellowship Detail | All Saints' Cathedral</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Sticky Navbar Injection Point -->
+  <div id="header-root"></div>
+
+  <!-- Hero Section -->
+  <section class="hero" id="hero-section">
+    <div class="glow-bg" style="top: 10%; left: 15%; background: var(--primary-orange);"></div>
+    <div class="container" style="position: relative; z-index: 10; display: flex; flex-direction: column; gap: 16px; max-width: 800px; text-align: center;">
+      <a href="groups.html" class="btn btn-outline" style="border-color: white; color: white; margin: 0 auto 12px; padding: 6px 16px; font-size: 11px;">← All Fellowships</a>
+      <span class="badge badge-green" style="margin: 0 auto;">Saint Group Profile</span>
+      <h1 id="group-title" style="font-family: var(--font-serif); font-size: 48px; font-weight: 800;">
+        Loading Fellowship…
+      </h1>
+      <p id="group-subtitle" style="font-size: 14px; color: #E2E8F0; max-width: 600px; margin: 0 auto;">
+        ...
+      </p>
+      <div style="margin-top: 12px;">
+        <a href="" id="whatsapp-btn" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Join WhatsApp Group</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Detailed contents -->
+  <section class="section-padding" style="background-color: var(--bg-white);">
+    <div class="container">
+      <div class="grid-12">
+        <!-- Left: Bio & Lessons -->
+        <div style="grid-column: span 7; display: flex; flex-direction: column; gap: 32px;">
+          <div class="card" style="padding: 40px;">
+            <h2 id="saint-name-title" style="font-size: 24px; border-bottom: 1.5px solid var(--border-light); padding-bottom: 12px; margin-bottom: 20px;">About the Saint</h2>
+            <p id="saint-description" style="font-size: 14px; line-height: 1.7; color: var(--text-slate); margin-bottom: 24px; white-space: pre-line;"></p>
+            
+            <div id="detailed-bio-section" style="border-top: 1px solid var(--border-light); padding-top: 24px; display: flex; flex-direction: column; gap: 20px;">
+              <!-- Filled in dynamically -->
+            </div>
+          </div>
+          
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+            <h3 style="font-size: 20px;">Cathedral Representation & Support</h3>
+            <div class="grid-2" id="reps-grid">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Executives & Activities -->
+        <div style="grid-column: span 5; display: flex; flex-direction: column; gap: 32px;">
+          <!-- Executives -->
+          <div class="card" style="padding: 24px;">
+            <h3 style="font-size: 16px; margin-bottom: 16px; border-bottom: 1px solid var(--border-light); padding-bottom: 8px;">Fellowship Executives</h3>
+            <div id="execs-list" style="display: flex; flex-direction: column; gap: 16px;">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Activities -->
+          <div class="card" style="padding: 24px;">
+            <h3 style="font-size: 16px; margin-bottom: 16px; border-bottom: 1px solid var(--border-light); padding-bottom: 8px;">Group Activities</h3>
+            <ul id="activities-list" style="list-style: none; display: flex; flex-direction: column; gap: 12px; font-size: 13px; color: var(--text-slate);">
+              <!-- Rendered dynamically -->
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer Injection Point -->
+  <div id="footer-root"></div>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="components.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const groupId = params.get('id') || 'st-mark';
+      
+      const groups = window.CathedralDB.getGroups();
+      const group = groups.find(g => g.id === groupId);
+      
+      if (!group) {
+        window.location.href = 'groups.html';
+        return;
+      }
+
+      // Title & Head
+      document.title = `${group.name} Fellowship | All Saints' Cathedral`;
+      document.getElementById('group-title').innerText = `${group.name} Fellowship`;
+      document.getElementById('group-subtitle').innerText = group.saintDescription;
+      
+      // WhatsApp Button
+      const waBtn = document.getElementById('whatsapp-btn');
+      waBtn.href = group.whatsappLink;
+      waBtn.addEventListener('click', () => {
+        window.CathedralDB.trackMetric('whatsappClicks');
+      });
+
+      // Saint Bio
+      document.getElementById('saint-name-title').innerText = `About ${group.saintName}`;
+      document.getElementById('saint-description').innerText = group.saintDescription;
+      
+      // Detailed Bio sections
+      const detailSec = document.getElementById('detailed-bio-section');
+      detailSec.innerHTML = `
+        <div>
+          <h4 style="font-size: 14px; font-family: var(--font-serif); color: var(--primary-blue); margin-bottom: 4px;">Historical Background</h4>
+          <p style="font-size: 13px; line-height: 1.6;">${group.aboutSaint.background}</p>
+        </div>
+        <div>
+          <h4 style="font-size: 14px; font-family: var(--font-serif); color: var(--primary-blue); margin-bottom: 4px;">Apostolic Calling</h4>
+          <p style="font-size: 13px; line-height: 1.6;">${group.aboutSaint.calling}</p>
+        </div>
+        <div>
+          <h4 style="font-size: 14px; font-family: var(--font-serif); color: var(--primary-blue); margin-bottom: 4px;">Evangelistic Ministry</h4>
+          <p style="font-size: 13px; line-height: 1.6;">${group.aboutSaint.ministry}</p>
+        </div>
+        <div>
+          <h4 style="font-size: 14px; font-family: var(--font-serif); color: var(--primary-blue); margin-bottom: 8px;">Key Lessons For Faith</h4>
+          <ul style="list-style: disc; pl: 20px; display: flex; flex-direction: column; gap: 8px; font-size: 13px;">
+            ${group.aboutSaint.lessons.map(l => `<li style="margin-left: 20px;">${l}</li>`).join('')}
+          </ul>
+        </div>
+      `;
+
+      // Representatives/Representation Details
+      const repsGrid = document.getElementById('reps-grid');
+      const representations = [
+        { title: 'Fellowship & Brotherhood', desc: group.representation.fellowship, icon: '👥' },
+        { title: 'Evangelism & Outreaches', desc: group.representation.evangelism, icon: '🧭' },
+        { title: 'Member Welfare & Care', desc: group.representation.welfare, icon: '❤️' },
+        { title: 'Church Projects Support', desc: group.representation.development, icon: '⚙️' },
+        { title: 'Prayer & Intercession', desc: group.representation.prayer, icon: '🔥' },
+        { title: 'Service & Sanctuary support', desc: group.representation.service, icon: '🛡️' }
+      ];
+      repsGrid.innerHTML = representations.map(r => `
+        <div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 10px;">
+          <div style="font-size: 24px;">${r.icon}</div>
+          <h4 style="font-size: 13px; font-weight: 700; color: var(--text-dark);">${r.title}</h4>
+          <p style="font-size: 11px; line-height: 1.5; color: var(--text-slate);">${r.desc}</p>
+        </div>
+      `).join('');
+
+      // Executives
+      const execsList = document.getElementById('execs-list');
+      const listArray = [
+        { role: 'Chairman', name: group.executives.chairman, image: 'public/img/mascot-evuka.jpg' },
+        { role: 'Vice Chairman', name: group.executives.viceChairman, image: 'public/img/brightman-eze.jpg' },
+        { role: 'Secretary', name: group.executives.secretary, image: 'public/img/ihunanyachi-nwogu.jpg' },
+        { role: 'Treasurer', name: group.executives.treasurer, image: 'public/img/juliet-pepple.jpg' },
+        { role: 'Chaplain', name: group.executives.chaplain, image: 'public/img/rev-joseph-stephen.jpg' }
+      ];
+      execsList.innerHTML = listArray.map(exec => `
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <img src="${exec.image}" alt="${exec.name}" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--primary-orange);">
+          <div>
+            <p style="font-size: 9px; font-weight: 700; text-transform: uppercase; color: var(--text-light); line-height: 1;">${exec.role}</p>
+            <p style="font-size: 12px; font-weight: 700; color: var(--text-dark); margin-top: 2px;">${exec.name || 'Vacant'}</p>
+          </div>
+        </div>
+      `).join('');
+
+      // Activities
+      const actList = document.getElementById('activities-list');
+      actList.innerHTML = group.activities.map(a => `
+        <li style="display: flex; align-items: flex-start; gap: 8px;">
+          <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--primary-green); margin-top: 6px; shrink: 0;"></span>
+          <span>${a}</span>
+        </li>
+      `).join('');
+    });
+  </script>
+</body>
+</html>

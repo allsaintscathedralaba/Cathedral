@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gallery | All Saints' Cathedral Abayi-Umuocham</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .gallery-item {
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      border: 1.5px solid var(--border-light);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s ease;
+    }
+    .gallery-item:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .gallery-item img {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Navbar Injection Point -->
+  <div id="header-root"></div>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="glow-bg" style="top: 10%; left: 15%; background: var(--primary-blue);"></div>
+    <div class="container" style="position: relative; z-index: 10; display: flex; flex-direction: column; gap: 16px; max-width: 800px;">
+      <span class="badge badge-orange" style="margin: 0 auto;">Memories</span>
+      <h1 style="font-family: var(--font-serif); font-size: 48px; font-weight: 800;">
+        Photo & Video Gallery
+      </h1>
+      <p style="font-size: 14px; color: #E2E8F0; max-width: 600px; margin: 0 auto;">
+        Browse visual records of our services, synods, youth programs, and community outreaches.
+      </p>
+    </div>
+  </section>
+
+  <!-- Gallery Content -->
+  <section class="section-padding" style="background-color: var(--bg-white);">
+    <div class="container">
+      
+      <!-- Back button when inside album -->
+      <div id="back-btn-container" style="display: none; margin-bottom: 24px;">
+        <button class="btn btn-outline" onclick="showAlbums()" style="padding: 6px 16px; font-size: 11px;">← All Albums</button>
+      </div>
+      
+      <h2 id="gallery-header" style="font-size: 24px; margin-bottom: 24px;">Browse Album Categories</h2>
+      
+      <!-- Albums list / items list container -->
+      <div id="gallery-container" class="gallery-grid">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Image Lightbox Modal -->
+  <div id="lightbox-modal" class="modal" onclick="closeLightbox(event)">
+    <div class="modal-content" style="max-width: 900px; padding: 10px; background: transparent; border: none; box-shadow: none;">
+      <button class="modal-close" onclick="closeLightbox(event)" style="color: white; top: -10px; right: 0;">&times;</button>
+      <img id="lightbox-img" src="" alt="View image" style="width: 100%; max-height: 80vh; object-fit: contain; border-radius: var(--radius-sm);">
+    </div>
+  </div>
+
+  <!-- Footer Injection Point -->
+  <div id="footer-root"></div>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="components.js"></script>
+  <script>
+    const ALBUMS = [
+      { id: 'sunday-worship', name: 'Sunday Worship Service', count: 4, cover: 'public/gallery/sunday-worship.jpg' },
+      { id: 'easter', name: 'Easter Celebrations', count: 3, cover: 'public/gallery/easter.jpg' },
+      { id: 'christmas', name: 'Christmas Day Service', count: 3, cover: 'public/gallery/christmas.jpg' },
+      { id: 'fathers-week', name: 'Anglican Men Association Week', count: 3, cover: 'public/gallery/fathers-week.jpg' },
+      { id: 'mothers-day', name: 'Mothering Sunday Service', count: 3, cover: 'public/gallery/mothers-day.jpg' },
+      { id: 'harvest', name: 'Harvest & Thanksgiving Day', count: 4, cover: 'public/gallery/harvest.jpg' },
+      { id: 'weddings', name: 'Marriages & Holy Matrimonies', count: 3, cover: 'public/gallery/weddings.jpg' },
+      { id: 'baptism', name: 'Baptisms & Confirmations', count: 3, cover: 'public/gallery/baptism.jpg' },
+      { id: 'conferences', name: 'Diocesan Conferences & Vigils', count: 3, cover: 'public/gallery/conferences.jpg' },
+      { id: 'choir', name: 'Cathedral Choir Festivals', count: 3, cover: 'public/gallery/choir.jpg' },
+      { id: 'youth', name: 'Youth Fellowships & Outreaches', count: 3, cover: 'public/gallery/youth.jpg' }
+    ];
+
+    let currentAlbumId = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      showAlbums();
+    });
+
+    function showAlbums() {
+      currentAlbumId = null;
+      document.getElementById('back-btn-container').style.display = 'none';
+      document.getElementById('gallery-header').innerText = 'Browse Album Categories';
+      
+      const container = document.getElementById('gallery-container');
+      container.innerHTML = ALBUMS.map(a => `
+        <div class="gallery-item" onclick="openAlbum('${a.id}', '${a.name}')">
+          <img src="${a.cover}" alt="${a.name}">
+          <div style="padding: 16px; background: var(--bg-white);">
+            <h3 style="font-size: 14px; margin-bottom: 2px;">${a.name}</h3>
+            <p style="font-size: 11px; color: var(--text-light); font-weight: 600;">${a.count} Photos & Videos</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openAlbum(albumId, albumName) {
+      currentAlbumId = albumId;
+      document.getElementById('back-btn-container').style.display = 'block';
+      document.getElementById('gallery-header').innerText = albumName;
+      
+      // Generate 3 dummy pictures for the album using the album cover
+      const images = Array.from({ length: 3 }, (_, i) => ({
+        src: `public/gallery/${albumId}.jpg`,
+        alt: `${albumName} photo ${i + 1}`
+      }));
+      
+      const container = document.getElementById('gallery-container');
+      container.innerHTML = images.map(img => `
+        <div class="gallery-item" onclick="openLightbox('${img.src}')">
+          <img src="${img.src}" alt="${img.alt}">
+        </div>
+      `).join('');
+    }
+
+    function openLightbox(src) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox-modal').classList.add('active');
+    }
+
+    function closeLightbox(e) {
+      // Close only if click is outside modal-content (or close btn is pressed)
+      if (e.target.id === 'lightbox-modal' || e.target.classList.contains('modal-close')) {
+        document.getElementById('lightbox-modal').classList.remove('active');
+      }
+    }
+  </script>
+</body>
+</html>

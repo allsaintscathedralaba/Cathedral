@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us | All Saints' Cathedral Abayi-Umuocham</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Sticky Navbar Injection Point -->
+  <div id="header-root"></div>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="glow-bg" style="top: 10%; left: 15%; background: var(--primary-blue);"></div>
+    <div class="container" style="position: relative; z-index: 10; display: flex; flex-direction: column; gap: 16px; max-width: 800px;">
+      <span class="badge badge-orange" style="margin: 0 auto;">Our History</span>
+      <h1 style="font-family: var(--font-serif); font-size: 48px; font-weight: 800;">
+        Cathedral History & Leadership
+      </h1>
+      <p style="font-size: 14px; color: #E2E8F0; max-width: 600px; margin: 0 auto;">
+        Learn about our early beginnings, structural development, pastoral leadership, and rich Anglican heritage.
+      </p>
+    </div>
+  </section>
+
+  <!-- History details -->
+  <section class="section-padding" style="background-color: var(--bg-white);">
+    <div class="container">
+      <div class="grid-12" style="align-items: flex-start;">
+        <div style="grid-column: span 7; display: flex; flex-direction: column; gap: 24px;">
+          <h2 style="font-size: 28px;">Our Early Beginnings</h2>
+          <p style="font-size: 14px; line-height: 1.7; color: var(--text-slate);">
+            All Saints' Cathedral, Abayi-Umuocham had its humble beginnings in the early 20th century as a small fellowship of dedicated Anglican believers gathering in family compounds. Over the decades, through tireless evangelism, community commitment, and the blessings of God, the fellowship expanded into a full parish.
+          </p>
+          <p style="font-size: 14px; line-height: 1.7; color: var(--text-slate);">
+            With the creation of the Diocese of Aba Ngwa North (Anglican Communion), the parish was chosen to serve as the seat of the Bishop, elevate to a Cathedral Status, representing structural, theological, and evangelistic leadership across the diocese.
+          </p>
+          
+          <div style="border-left: 3px solid var(--primary-orange); padding-left: 20px; margin-top: 10px;">
+            <p style="font-family: var(--font-serif); font-size: 16px; font-style: italic; color: var(--text-dark);">
+              "Contending earnestly for the faith once delivered to the saints is our core guide, ensuring that every generation walks in the light of the gospel."
+            </p>
+            <p style="font-size: 10px; font-weight: 700; color: var(--primary-blue); text-transform: uppercase; margin-top: 6px;">— Diocesan mandate</p>
+          </div>
+        </div>
+
+        <div style="grid-column: span 5; display: flex; flex-direction: column; gap: 24px;">
+          <div class="card" style="background: var(--bg-cream); border: 1.5px solid var(--border-light);">
+            <h3 style="font-size: 18px; margin-bottom: 12px; color: var(--primary-blue);">Mission Statement</h3>
+            <p style="font-size: 13px; line-height: 1.6; color: var(--text-slate);">
+              To build a vibrant, Bible-based, and holy congregation of believers through intensive evangelism, solid Christian education, and sincere welfare.
+            </p>
+          </div>
+          <div class="card" style="background: var(--bg-cream); border: 1.5px solid var(--border-light);">
+            <h3 style="font-size: 18px; margin-bottom: 12px; color: var(--primary-green);">Vision Statement</h3>
+            <p style="font-size: 13px; line-height: 1.6; color: var(--text-slate);">
+              To remain a leading Cathedral in Nigeria, raising generations of spiritually matured Christians who represent excellence in their families and societies.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Clergy Listing -->
+  <section class="section-padding" style="background-color: var(--bg-grey);">
+    <div class="container">
+      <div class="text-center" style="margin-bottom: 50px;">
+        <span class="badge badge-green">Leadership</span>
+        <h2 style="font-size: 36px; margin-top: 10px;">Cathedral Clergy & Officers</h2>
+        <p style="max-width: 600px; margin: 10px auto 0; font-size: 14px; color: var(--text-light);">
+          Meet our pastoral leaders, administrative officers, and PCC wardens guiding the spiritual affairs of the Cathedral.
+        </p>
+      </div>
+
+      <div class="grid-4" id="clergy-grid">
+        <!-- Rendered dynamically by script -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer Injection Point -->
+  <div id="footer-root"></div>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="components.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Populate Clergy
+      const clergy = window.CathedralDB.getClergy();
+      const grid = document.getElementById('clergy-grid');
+      if (grid) {
+        grid.innerHTML = clergy.map((c, idx) => `
+          <div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 16px; align-items: center; text-align: center;">
+            <img src="${c.image}" alt="${c.name}" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary-orange); box-shadow: var(--shadow-sm);">
+            <div>
+              <h3 style="font-size: 14px; margin-bottom: 4px;">${c.name}</h3>
+              <p style="font-size: 10px; font-weight: 700; color: var(--primary-blue); text-transform: uppercase; letter-spacing: 0.5px;">${c.position}</p>
+            </div>
+          </div>
+        `).join('');
+      }
+    });
+  </script>
+</body>
+</html>

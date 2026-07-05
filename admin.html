@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin CMS Portal | All Saints' Cathedral Abayi-Umuocham</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Admin specific layout styles */
+    .admin-container {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      min-height: calc(100vh - 80px);
+    }
+    
+    .sidebar {
+      background-color: var(--bg-charcoal);
+      color: #94A3B8;
+      padding: 30px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .sidebar-btn {
+      width: 100%;
+      background: none;
+      border: none;
+      color: #94A3B8;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      text-align: left;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.2s ease;
+    }
+    
+    .sidebar-btn:hover, .sidebar-btn.active {
+      color: white;
+      background-color: rgba(255,255,255,0.05);
+    }
+    
+    .sidebar-btn.active {
+      background-color: var(--primary-orange);
+      color: white;
+    }
+    
+    .admin-main {
+      padding: 40px;
+      background-color: var(--bg-grey);
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-light);
+    }
+
+    .form-group input, .form-group textarea, .form-group select {
+      padding: 12px 16px;
+      border: 1.5px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      outline: none;
+      background-color: var(--bg-white);
+      color: var(--text-dark);
+    }
+
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+      border-color: var(--primary-orange);
+    }
+
+    .admin-section {
+      display: none;
+    }
+    
+    .admin-section.active {
+      display: block;
+    }
+
+    .item-list-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      background: var(--bg-white);
+      border: 1.5px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      margin-bottom: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Navbar Injection Point -->
+  <div id="header-root"></div>
+
+  <!-- Auth Gate -->
+  <div id="auth-gate" style="display: flex; align-items: center; justify-content: center; min-height: 80vh; background-color: var(--bg-grey);">
+    <div class="card" style="width: 100%; max-width: 400px; padding: 40px; text-align: center; display: flex; flex-direction: column; gap: 20px;">
+      <div style="font-size: 36px;">🔒</div>
+      <h2 style="font-size: 24px;">Admin Portal</h2>
+      <p style="font-size: 12px; color: var(--text-light);">Cathedral CMS — Authorized Personnel Only</p>
+      
+      <form id="auth-form" onsubmit="handleAuthSubmit(event)" style="display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <input type="password" id="auth-pin" required placeholder="Enter Admin PIN" style="padding: 12px 16px; border: 1.5px solid var(--border-light); border-radius: var(--radius-sm); font-size: 16px; text-align: center; letter-spacing: 2px;">
+        </div>
+        <p id="auth-error" style="font-size: 11px; color: red; font-weight: 700; display: none;">Incorrect PIN. Please try again.</p>
+        <button type="submit" class="btn btn-primary" style="height: 48px;">Access Dashboard</button>
+      </form>
+      <p style="font-size: 10px; color: var(--text-light);">Demo PIN: <strong>1234</strong></p>
+    </div>
+  </div>
+
+  <!-- CMS Panel (Hidden by default) -->
+  <div id="cms-panel" class="admin-container" style="display: none;">
+    <!-- Sidebar navigation -->
+    <aside class="sidebar">
+      <div style="padding: 0 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px;">
+        <h3 style="color: white; font-size: 15px;">Cathedral CMS</h3>
+        <p style="font-size: 9px; font-weight: 700; color: var(--primary-orange); text-transform: uppercase; margin-top: 2px;">Portal Dashboard</p>
+      </div>
+
+      <button class="sidebar-btn active" onclick="switchSection('dashboard', this)">📈 Dashboard Overview</button>
+      <button class="sidebar-btn" onclick="switchSection('sermons', this)">📖 Manage Sermons</button>
+      <button class="sidebar-btn" onclick="switchSection('announcements', this)">🔔 Manage Bulletins</button>
+      <button class="sidebar-btn" onclick="switchSection('events', this)">📅 Manage Events</button>
+      <button class="sidebar-btn" onclick="switchSection('whatsapp', this)">🔗 Group WhatsApp</button>
+      
+      <button class="sidebar-btn" onclick="handleLogout()" style="margin-top: auto; color: #EF4444;">🚪 Sign Out</button>
+    </aside>
+
+    <!-- Main Workspace -->
+    <main class="admin-main">
+      <div id="toast" style="position: fixed; top: 100px; right: 30px; background: var(--primary-green); color: white; padding: 12px 24px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 700; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; z-index: 2000; box-shadow: var(--shadow-md);">
+        Saved successfully!
+      </div>
+
+      <!-- ── SECTION: DASHBOARD ── -->
+      <section id="section-dashboard" class="admin-section active" style="display: flex; flex-direction: column; gap: 32px;">
+        <div>
+          <h2 style="font-size: 28px; margin-bottom: 4px;">CMS Overview</h2>
+          <p style="font-size: 13px; color: var(--text-light);">Welcome, Administrator. Here are the live visitor and content analytics.</p>
+        </div>
+
+        <div class="grid-4" id="stats-grid">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <div class="card" style="padding: 24px;">
+          <h3 style="font-size: 16px; margin-bottom: 12px; color: var(--primary-blue);">System Status</h3>
+          <p style="font-size: 13px; color: var(--text-slate); line-height: 1.6;">
+            All local databases are currently synched with the browser localStorage container. Your modifications will persist locally and update all public sub-pages instantly.
+          </p>
+        </div>
+      </section>
+
+      <!-- ── SECTION: SERMONS ── -->
+      <section id="section-sermons" class="admin-section">
+        <h2 style="font-size: 28px; margin-bottom: 24px;">Manage Sermons</h2>
+        
+        <!-- Add Form -->
+        <div class="card" style="padding: 32px; margin-bottom: 40px;">
+          <h3 style="font-size: 18px; margin-bottom: 16px; color: var(--primary-blue);">Publish New Sermon</h3>
+          <form id="sermon-form" onsubmit="saveSermon(event)">
+            <div class="grid-2">
+              <div class="form-group">
+                <label>Sermon Title *</label>
+                <input type="text" required id="s-title" placeholder="e.g. Living in Grace">
+              </div>
+              <div class="form-group">
+                <label>Speaker Name *</label>
+                <input type="text" required id="s-speaker" placeholder="e.g. Rt. Rev. Nathan Kanu">
+              </div>
+            </div>
+            <div class="grid-3" style="gap: 20px;">
+              <div class="form-group">
+                <label>Scripture Reference *</label>
+                <input type="text" required id="s-scripture" placeholder="e.g. John 3:16">
+              </div>
+              <div class="form-group">
+                <label>Publish Date *</label>
+                <input type="date" required id="s-date">
+              </div>
+              <div class="form-group">
+                <label>Category *</label>
+                <select id="s-category">
+                  <option value="Wermon">Sermon</option>
+                  <option value="Bible Study">Bible Study</option>
+                  <option value="Article">Article</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Brief Summary *</label>
+              <input type="text" required id="s-summary" placeholder="Provide a short description shown in cards…">
+            </div>
+            <div class="form-group">
+              <label>Full Transcript Text *</label>
+              <textarea required id="s-full" rows="6" placeholder="Paste the complete transcript text here…"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Publish Sermon</button>
+          </form>
+        </div>
+
+        <!-- List -->
+        <h3 style="font-size: 18px; margin-bottom: 16px;">Currently Published</h3>
+        <div id="admin-sermons-list"></div>
+      </section>
+
+      <!-- ── SECTION: ANNOUNCEMENTS ── -->
+      <section id="section-announcements" class="admin-section">
+        <h2 style="font-size: 28px; margin-bottom: 24px;">Manage Weekly Bulletins</h2>
+
+        <!-- Add Form -->
+        <div class="card" style="padding: 32px; margin-bottom: 40px;">
+          <h3 style="font-size: 18px; margin-bottom: 16px; color: var(--primary-blue);">Post New Announcement</h3>
+          <form id="announcement-form" onsubmit="saveAnnouncement(event)">
+            <div class="grid-2">
+              <div class="form-group">
+                <label>Announcement Title *</label>
+                <input type="text" required id="a-title" placeholder="e.g. PCC Meeting Notice">
+              </div>
+              <div class="form-group">
+                <label>Category *</label>
+                <select id="a-category">
+                  <option>General</option>
+                  <option>Events</option>
+                  <option>Worship</option>
+                  <option>Youth</option>
+                  <option>Finance</option>
+                </select>
+              </div>
+            </div>
+            <div class="grid-2">
+              <div class="form-group">
+                <label>Posting Date *</label>
+                <input type="date" required id="a-date">
+              </div>
+              <div class="form-group">
+                <label>Expiry Date *</label>
+                <input type="date" required id="a-expiry">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Bulletin Content *</label>
+              <textarea required id="a-content" rows="4" placeholder="Write notice content here…"></textarea>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+              <input type="checkbox" id="a-pin" style="width: 16px; height: 16px; accent-color: var(--primary-orange);">
+              <label for="a-pin" style="font-size: 12px; font-weight: 700; color: var(--text-dark); cursor: pointer;">Pin this notice to the top of the bulletins page</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Post Announcement</button>
+          </form>
+        </div>
+
+        <h3 style="font-size: 18px; margin-bottom: 16px;">Active Notices</h3>
+        <div id="admin-announcements-list"></div>
+      </section>
+
+      <!-- ── SECTION: EVENTS ── -->
+      <section id="section-events" class="admin-section">
+        <h2 style="font-size: 28px; margin-bottom: 24px;">Manage Upcoming Events</h2>
+
+        <!-- Add Form -->
+        <div class="card" style="padding: 32px; margin-bottom: 40px;">
+          <h3 style="font-size: 18px; margin-bottom: 16px; color: var(--primary-blue);">Add Calendar Event</h3>
+          <form id="event-form" onsubmit="saveEvent(event)">
+            <div class="grid-2">
+              <div class="form-group">
+                <label>Event Title *</label>
+                <input type="text" required id="e-title" placeholder="e.g. Diocesan Youth Camp">
+              </div>
+              <div class="form-group">
+                <label>Category (Badge) *</label>
+                <input type="text" required id="e-category" placeholder="e.g. Youth, Synod, Vigil">
+              </div>
+            </div>
+            <div class="grid-3" style="gap: 20px;">
+              <div class="form-group">
+                <label>Event Date *</label>
+                <input type="date" required id="e-date">
+              </div>
+              <div class="form-group">
+                <label>Event Time *</label>
+                <input type="text" required id="e-time" placeholder="e.g. 10:00 PM">
+              </div>
+              <div class="form-group">
+                <label>Venue / Location *</label>
+                <input type="text" required id="e-location" placeholder="e.g. Cathedral Auditorium">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Description *</label>
+              <textarea required id="e-desc" rows="3" placeholder="Provide event schedule details…"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Event</button>
+          </form>
+        </div>
+
+        <h3 style="font-size: 18px; margin-bottom: 16px;">Scheduled Events</h3>
+        <div id="admin-events-list"></div>
+      </section>
+
+      <!-- ── SECTION: WHATSAPP ── -->
+      <section id="section-whatsapp" class="admin-section">
+        <h2 style="font-size: 28px; margin-bottom: 24px;">Manage Saint Group WhatsApp Links</h2>
+        <p style="font-size: 13px; color: var(--text-light); margin-bottom: 32px;">Update the join/invite links for the WhatsApp communities of our Saint Groups.</p>
+
+        <div id="admin-whatsapp-list" style="display: flex; flex-direction: column; gap: 20px;">
+          <!-- Filled in dynamically -->
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Footer Injection Point -->
+  <div id="footer-root"></div>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="components.js"></script>
+  <script>
+    const ADMIN_PIN = '1234';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check auth state
+      const isAuth = sessionStorage.getItem('admin_logged') === 'true';
+      if (isAuth) {
+        showPanel();
+      }
+    });
+
+    function handleAuthSubmit(e) {
+      e.preventDefault();
+      const pin = document.getElementById('auth-pin').value;
+      
+      if (pin === ADMIN_PIN) {
+        sessionStorage.setItem('admin_logged', 'true');
+        showPanel();
+      } else {
+        document.getElementById('auth-error').style.display = 'block';
+      }
+    }
+
+    function handleLogout() {
+      sessionStorage.removeItem('admin_logged');
+      window.location.reload();
+    }
+
+    function showPanel() {
+      document.getElementById('auth-gate').style.display = 'none';
+      document.getElementById('cms-panel').style.display = 'grid';
+      
+      renderDashboard();
+      renderSermonsList();
+      renderAnnouncementsList();
+      renderEventsList();
+      renderWhatsappLinks();
+    }
+
+    function showToast() {
+      const toast = document.getElementById('toast');
+      toast.style.opacity = '1';
+      setTimeout(() => {
+        toast.style.opacity = '0';
+      }, 3000);
+    }
+
+    // Switch section
+    function switchSection(section, btn) {
+      // Update buttons
+      const btns = document.querySelectorAll('.sidebar-btn');
+      btns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      // Update sections
+      const sections = document.querySelectorAll('.admin-section');
+      sections.forEach(s => s.classList.remove('active'));
+      document.getElementById('section-' + section).classList.add('active');
+    }
+
+    // 📈 Dashboard
+    function renderDashboard() {
+      const stats = window.CathedralDB.getAnalytics();
+      const grid = document.getElementById('stats-grid');
+      
+      const statCards = [
+        { label: 'Total Page Views', value: stats.pageViews, color: 'badge-orange' },
+        { label: 'Sermon Downloads', value: stats.sermonDownloads, color: 'badge-blue' },
+        { label: 'Forms Submitted', value: stats.formSubmissions, color: 'badge-green' },
+        { label: 'WhatsApp CTA Clicks', value: stats.whatsappClicks, color: 'badge-blue' }
+      ];
+
+      grid.innerHTML = statCards.map(s => `
+        <div class="card" style="padding: 24px; text-align: left;">
+          <p style="font-size: 24px; font-weight: 800; color: var(--text-dark);">${s.value.toLocaleString()}</p>
+          <p style="font-size: 10px; font-weight: 700; color: var(--text-light); text-transform: uppercase; margin-top: 4px;">${s.label}</p>
+        </div>
+      `).join('');
+    }
+
+    // 📖 Sermons CRUD
+    function renderSermonsList() {
+      const sermons = window.CathedralDB.getSermons();
+      const container = document.getElementById('admin-sermons-list');
+      container.innerHTML = sermons.map(s => `
+        <div class="item-list-row">
+          <div>
+            <h4 style="font-size: 14px; font-weight: 700;">${s.title}</h4>
+            <p style="font-size: 11px; color: var(--text-light);">${s.speaker} | ${s.scripture} | ${s.date}</p>
+          </div>
+          <button onclick="deleteSermon('${s.id}')" class="btn btn-outline" style="border-color: red; color: red; padding: 6px 14px; font-size: 10px;">Delete</button>
+        </div>
+      `).join('');
+    }
+
+    function saveSermon(e) {
+      e.preventDefault();
+      const s = {
+        title: document.getElementById('s-title').value,
+        speaker: document.getElementById('s-speaker').value,
+        scripture: document.getElementById('s-scripture').value,
+        date: document.getElementById('s-date').value,
+        readingTime: '5 mins',
+        summary: document.getElementById('s-summary').value,
+        fullArticle: document.getElementById('s-full').value,
+        topic: 'Cathedral Teaching',
+        category: document.getElementById('s-category').value
+      };
+
+      window.CathedralDB.addSermon(s);
+      document.getElementById('sermon-form').reset();
+      renderSermonsList();
+      showToast();
+    }
+
+    function deleteSermon(id) {
+      if (confirm('Are you sure you want to delete this sermon?')) {
+        window.CathedralDB.deleteSermon(id);
+        renderSermonsList();
+        showToast();
+      }
+    }
+
+    // 🔔 Announcements CRUD
+    function renderAnnouncementsList() {
+      const container = document.getElementById('admin-announcements-list');
+      const list = window.CathedralDB.getAnnouncements();
+      container.innerHTML = list.map(a => `
+        <div class="item-list-row">
+          <div>
+            <h4 style="font-size: 14px; font-weight: 700;">${a.title} [${a.category}]</h4>
+            <p style="font-size: 11px; color: var(--text-light);">${a.isPinned ? 'Pinned' : 'Regular'} | Expiry: ${a.expiryDate}</p>
+          </div>
+          <button onclick="deleteAnnouncement('${a.id}')" class="btn btn-outline" style="border-color: red; color: red; padding: 6px 14px; font-size: 10px;">Delete</button>
+        </div>
+      `).join('');
+    }
+
+    function saveAnnouncement(e) {
+      e.preventDefault();
+      const a = {
+        title: document.getElementById('a-title').value,
+        category: document.getElementById('a-category').value,
+        date: document.getElementById('a-date').value,
+        expiryDate: document.getElementById('a-expiry').value,
+        content: document.getElementById('a-content').value,
+        isPinned: document.getElementById('a-pin').checked
+      };
+
+      window.CathedralDB.addAnnouncement(a);
+      document.getElementById('announcement-form').reset();
+      renderAnnouncementsList();
+      showToast();
+    }
+
+    function deleteAnnouncement(id) {
+      if (confirm('Are you sure you want to delete this notice?')) {
+        window.CathedralDB.deleteAnnouncement(id);
+        renderAnnouncementsList();
+        showToast();
+      }
+    }
+
+    // 📅 Events CRUD
+    function renderEventsList() {
+      const container = document.getElementById('admin-events-list');
+      const list = window.CathedralDB.getEvents();
+      container.innerHTML = list.map(ev => `
+        <div class="item-list-row">
+          <div>
+            <h4 style="font-size: 14px; font-weight: 700;">${ev.title}</h4>
+            <p style="font-size: 11px; color: var(--text-light);">${ev.date} | ${ev.time} | Venue: ${ev.location}</p>
+          </div>
+          <button onclick="deleteEvent('${ev.id}')" class="btn btn-outline" style="border-color: red; color: red; padding: 6px 14px; font-size: 10px;">Delete</button>
+        </div>
+      `).join('');
+    }
+
+    function saveEvent(e) {
+      e.preventDefault();
+      const ev = {
+        title: document.getElementById('e-title').value,
+        date: document.getElementById('e-date').value,
+        time: document.getElementById('e-time').value,
+        location: document.getElementById('e-location').value,
+        description: document.getElementById('e-desc').value,
+        category: document.getElementById('e-category').value
+      };
+
+      window.CathedralDB.addEvent(ev);
+      document.getElementById('event-form').reset();
+      renderEventsList();
+      showToast();
+    }
+
+    function deleteEvent(id) {
+      if (confirm('Are you sure you want to delete this event?')) {
+        window.CathedralDB.deleteEvent(id);
+        renderEventsList();
+        showToast();
+      }
+    }
+
+    // 🔗 WhatsApp links editor
+    function renderWhatsappLinks() {
+      const container = document.getElementById('admin-whatsapp-list');
+      const groups = window.CathedralDB.getGroups();
+      
+      container.innerHTML = groups.map(g => `
+        <div class="card" style="padding: 24px;">
+          <h4 style="font-size: 14px; font-weight: 700; margin-bottom: 12px;">${g.name} Fellowship</h4>
+          <div style="display: flex; gap: 12px; align-items: center;">
+            <input type="url" id="wa-input-${g.id}" value="${g.whatsappLink}" style="flex-grow: 1; padding: 10px 14px; border: 1.5px solid var(--border-light); border-radius: var(--radius-sm); font-size: 12px; font-family: monospace;">
+            <button onclick="saveWhatsappLink('${g.id}')" class="btn btn-secondary" style="padding: 10px 20px;">Save Link</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function saveWhatsappLink(groupId) {
+      const val = document.getElementById('wa-input-' + groupId).value;
+      const groups = window.CathedralDB.getGroups();
+      const group = groups.find(x => x.id === groupId);
+      
+      if (group) {
+        group.whatsappLink = val;
+        window.CathedralDB.updateGroup(group);
+        renderWhatsappLinks();
+        showToast();
+      }
+    }
+  </script>
+</body>
+</html>

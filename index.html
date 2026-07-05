@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Saints' Cathedral Abayi-Umuocham</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Sticky Navbar Injection Point -->
+  <div id="header-root"></div>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="glow-bg" style="top: 10%; left: 15%; background: var(--primary-orange);"></div>
+    <div class="glow-bg" style="bottom: 10%; right: 15%; background: var(--primary-green); animation-delay: 2s;"></div>
+    
+    <div class="container" style="position: relative; z-index: 10; display: flex; flex-direction: column; gap: 24px; max-width: 800px;">
+      <span class="badge badge-orange" style="margin: 0 auto;">Diocese of Aba Ngwa North (Anglican Communion)</span>
+      <h1 style="font-family: var(--font-serif); font-size: 54px; font-weight: 800; line-height: 1.15;">
+        Welcome to All Saints' Cathedral Abayi-Umuocham
+      </h1>
+      <p style="font-size: 15px; color: #E2E8F0; font-weight: 400; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+        A place of worship, fellowship, holiness, and community transformation. Experience the warm presence of God and deepen your spiritual journey with us.
+      </p>
+      
+      <div style="display: flex; gap: 16px; justify-content: center; margin-top: 12px;">
+        <a href="about.html" class="btn btn-primary">Our History & Leadership</a>
+        <a href="sermons.html" class="btn btn-outline" style="border-color: white; color: white;">Listen to Sermons</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Welcome / Bishop Profile -->
+  <section class="section-padding" style="background-color: var(--bg-white);">
+    <div class="container">
+      <div class="grid-2" style="align-items: center; gap: 60px;">
+        <div style="position: relative;">
+          <img src="public/img/bishop-nathan-kanu.jpg" alt="Rt. Rev. Nathan Kanu" style="width: 100%; border-radius: var(--radius); box-shadow: var(--shadow-md); object-fit: cover; aspect-ratio: 1/1;">
+          <div style="position: absolute; bottom: 20px; left: 20px; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); padding: 12px 24px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);">
+            <p style="color: white; font-size: 12px; font-weight: 700; font-family: var(--font-serif);">The Rt. Rev. Nathan C. O. Kanu, PhD</p>
+            <p style="color: var(--primary-orange); font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px;">Diocesan Bishop</p>
+          </div>
+        </div>
+        
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          <span class="badge badge-green" style="width: fit-content;">From the Bishop's Desk</span>
+          <h2 style="font-size: 36px; line-height: 1.2;">Welcome to Our Spiritual Sanctuary</h2>
+          <p style="font-size: 14px; line-height: 1.7; color: var(--text-slate);">
+            It is a great privilege to welcome you to the digital home of All Saints' Cathedral, Abayi-Umuocham. We are a family of faith dedicated to contending earnestly for the biblical truths, modeling holy lifestyles, and extending Christ's love to our communities.
+          </p>
+          <p style="font-size: 14px; line-height: 1.7; color: var(--text-slate);">
+            Whether you are searching for a spiritual home, seeking pastoral support, or visiting us from afar, we pray that your connection with our Cathedral community inspires your faith and brings you closer to the Savior.
+          </p>
+          <div style="margin-top: 10px;">
+            <a href="about.html" class="btn btn-secondary">Learn More About the Diocese</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Service Schedules -->
+  <section class="section-padding" style="background-color: var(--bg-grey);">
+    <div class="container">
+      <div class="text-center" style="margin-bottom: 50px;">
+        <span class="badge badge-blue">Worship With Us</span>
+        <h2 style="font-size: 36px; margin-top: 10px;">Cathedral Worship Schedules</h2>
+        <p style="max-width: 600px; margin: 10px auto 0; font-size: 14px; color: var(--text-light);">
+          Join us for corporate communion, spiritual renewal, and active praise across our weekly services.
+        </p>
+      </div>
+
+      <div class="grid-3" id="services-grid">
+        <!-- Rendered dynamically by script -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Dynamic Upcoming Events -->
+  <section class="section-padding" style="background-color: var(--bg-white);">
+    <div class="container">
+      <div class="text-center" style="margin-bottom: 50px;">
+        <span class="badge badge-orange">Calendar</span>
+        <h2 style="font-size: 36px; margin-top: 10px;">Upcoming Cathedral Events</h2>
+        <p style="max-width: 600px; margin: 10px auto 0; font-size: 14px; color: var(--text-light);">
+          Mark your calendar for synods, vigils, youth conferences, and key celebrations.
+        </p>
+      </div>
+
+      <div class="grid-2" id="events-grid">
+        <!-- Rendered dynamically by script -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer Injection Point -->
+  <div id="footer-root"></div>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="components.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Populate Service Schedules
+      const services = window.CathedralDB.getServices();
+      const sGrid = document.getElementById('services-grid');
+      if (sGrid) {
+        sGrid.innerHTML = services.map(s => `
+          <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+            <div>
+              <span class="badge badge-blue" style="margin-bottom: 12px;">${s.day}</span>
+              <h3 style="font-size: 18px; margin-bottom: 8px;">${s.name}</h3>
+              <p style="font-size: 13px; color: var(--text-slate); margin-bottom: 16px; line-height: 1.6;">${s.description}</p>
+            </div>
+            <p style="font-size: 12px; font-weight: 700; color: var(--primary-orange); font-family: var(--font-sans);">${s.time}</p>
+          </div>
+        `).join('');
+      }
+
+      // 2. Populate Upcoming Events
+      const events = window.CathedralDB.getEvents().slice(0, 2);
+      const eGrid = document.getElementById('events-grid');
+      if (eGrid) {
+        eGrid.innerHTML = events.map(e => `
+          <div class="card" style="display: flex; gap: 20px; align-items: center; text-align: left; padding: 24px;">
+            <div style="background: rgba(31, 94, 169, 0.05); padding: 16px 20px; border-radius: var(--radius-sm); border: 1.5px solid var(--border-light); text-align: center; min-width: 100px;">
+              <p style="font-size: 20px; font-weight: 800; font-family: var(--font-serif); color: var(--primary-blue); line-height: 1;">${new Date(e.date).getDate()}</p>
+              <p style="font-size: 9px; font-weight: 800; text-transform: uppercase; color: var(--text-light); margin-top: 4px;">${new Date(e.date).toLocaleDateString('en-US', { month: 'short' })}</p>
+            </div>
+            <div>
+              <span class="badge badge-orange" style="margin-bottom: 6px; font-size: 8px;">${e.category}</span>
+              <h3 style="font-size: 16px; margin-bottom: 4px;">${e.title}</h3>
+              <p style="font-size: 11px; color: var(--text-light); margin-bottom: 4px;">⏰ ${e.time}  |  📍 ${e.location}</p>
+              <p style="font-size: 12px; color: var(--text-slate); line-height: 1.5;">${e.description}</p>
+            </div>
+          </div>
+        `).join('');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us | All Saints' Cathedral Abayi-Umuocham</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Sticky Navbar Injection Point -->
+  <div id="header-root"></div>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="glow-bg" style="top: 10%; left: 15%; background: var(--primary-orange);"></div>
+    <div class="container" style="position: relative; z-index: 10; display: flex; flex-direction: column; gap: 16px; max-width: 800px;">
+      <span class="badge badge-orange" style="margin: 0 auto;">Reach Out</span>
+      <h1 style="font-family: var(--font-serif); font-size: 48px; font-weight: 800;">
+        Contact the Cathedral
+      </h1>
+      <p style="font-size: 14px; color: #E2E8F0; max-width: 600px; margin: 0 auto;">
+        Have questions about service schedules, counselling needs, bookings, or thanksgivings? Reach out to us.
+      </p>
+    </div>
+  </section>
+
+  <!-- Contact layout -->
+  <section class="section-padding">
+    <div class="container">
+      <div class="grid-12">
+        <!-- Left: Contacts & Map -->
+        <div style="grid-column: span 5; display: flex; flex-direction: column; gap: 32px;">
+          <div class="card" style="padding: 32px; display: flex; flex-direction: column; gap: 24px;">
+            <h3 style="font-size: 18px; border-bottom: 1.5px solid var(--border-light); padding-bottom: 8px;">Cathedral Details</h3>
+            
+            <div style="display: flex; align-items: flex-start; gap: 12px;">
+              <div style="font-size: 20px;">📍</div>
+              <div>
+                <p style="font-size: 10px; font-weight: 700; color: var(--text-light); text-transform: uppercase;">Address</p>
+                <p style="font-size: 12px; font-weight: 600; color: var(--text-dark); margin-top: 2px;">
+                  Abayi-Umuocham Road, Opp. Ngwa High School, Abayi, Aba, Abia State, Nigeria.
+                </p>
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: flex-start; gap: 12px;">
+              <div style="font-size: 20px;">📞</div>
+              <div>
+                <p style="font-size: 10px; font-weight: 700; color: var(--text-light); text-transform: uppercase;">Phone Lines</p>
+                <p style="font-size: 12px; font-weight: 600; color: var(--text-dark); margin-top: 2px;">
+                  +234 803 123 4567 / +234 805 765 4321
+                </p>
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: flex-start; gap: 12px;">
+              <div style="font-size: 20px;">✉️</div>
+              <div>
+                <p style="font-size: 10px; font-weight: 700; color: var(--text-light); text-transform: uppercase;">Email Contacts</p>
+                <p style="font-size: 12px; font-weight: 600; color: var(--text-dark); margin-top: 2px;">
+                  info@allsaintscathedralaba.org
+                </p>
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: flex-start; gap: 12px;">
+              <div style="font-size: 20px;">⏰</div>
+              <div>
+                <p style="font-size: 10px; font-weight: 700; color: var(--text-light); text-transform: uppercase;">Office Hours</p>
+                <p style="font-size: 12px; font-weight: 600; color: var(--text-dark); margin-top: 2px;">
+                  Monday – Friday: 8:00 AM – 4:00 PM<br>
+                  Saturday: 9:00 AM – 1:00 PM
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Socials and WhatsApp -->
+          <div class="card" style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+            <h3 style="font-size: 16px; border-bottom: 1px solid var(--border-light); padding-bottom: 8px;">Social Channels</h3>
+            
+            <a href="https://wa.me/2348031234567" target="_blank" rel="noopener noreferrer" onclick="trackWhatsappClick()" class="btn btn-secondary" style="background-color: #059669; width: 100%; justify-content: center;">
+              Chat on WhatsApp
+            </a>
+
+            <div class="grid-2" style="gap: 12px;">
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="font-family: var(--font-sans); padding: 10px 0; justify-content: center;">Facebook</a>
+              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="font-family: var(--font-sans); padding: 10px 0; justify-content: center;">YouTube</a>
+            </div>
+          </div>
+
+          <!-- Embed Google Maps -->
+          <div class="card" style="padding: 0; overflow: hidden; height: 260px; border-radius: var(--radius);">
+            <iframe
+              title="All Saints Cathedral Map"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3971.1523810428397!2d7.360833!3d5.127778!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1042e5e1e1a5e1e5%3A0x1234567890abcdef!2sAbayi%2C+Aba%2C+Abia+State!5e0!3m2!1sen!2sng!4v1720000000000"
+              width="100%"
+              height="100%"
+              style="border: 0;"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </div>
+        </div>
+
+        <!-- Right: Inquiry Form -->
+        <div style="grid-column: span 7;">
+          <div class="card" style="padding: 40px;" id="form-container">
+            <h2 style="font-size: 24px; margin-bottom: 6px;">Send a Direct Message</h2>
+            <p style="font-size: 13px; color: var(--text-light); margin-bottom: 32px;">Please fill out the form below. We will get back to you within 24 hours.</p>
+
+            <form id="contact-form" onsubmit="handleContactSubmit(event)" style="display: flex; flex-direction: column; gap: 20px;">
+              <div class="grid-2" style="gap: 20px;">
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                  <label style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-light);">Your Name *</label>
+                  <input type="text" required id="c-name" placeholder="Full name" style="padding: 12px 16px; border: 1.5px solid var(--border-light); border-radius: var(--radius-sm); font-size: 13px;">
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                  <label style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-light);">Email Address *</label>
+                  <input type="email" required id="c-email" placeholder="your@email.com" style="padding: 12px 16px; border: 1.5px solid var(--border-light); border-radius: var(--radius-sm); font-size: 13px;">
+                </div>
+              </div>
+
+              <div class="grid-2" style="gap: 20px;">
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                  <label style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-light);">Phone Number</label>
+                  <input type="tel" id="c-phone" placeholder="0803 123 4567" style="padding: 12px 16px; border: 1.5px solid var(--border-light); border-radius: var(--radius-sm); font-size: 13px;">
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                  <label style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-light);">Subject *</label>
+                  <select required id="c-subject" style="padding: 12px 16px; border: 1.5px solid var(--border-light); border-radius: var(--radius-sm); font-size: 13px; background-color: var(--bg-white); color: var(--text-dark);">
+                    <option value="">Select subject</option>
+                    <option>General Enquiry</option>
+                    <option>Pastoral Counselling Request</option>
+                    <option>Booking / Event Request</option>
+                    <option>Thanksgiving Service</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <label style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-light);">Your Message *</label>
+                <textarea required id="c-message" rows="6" placeholder="Write your enquiry details here…" style="padding: 12px 16px; border: 1.5px solid var(--border-light); border-radius: var(--radius-sm); font-size: 13px; resize: none;"></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="height: 52px; font-size: 14px; margin-top: 10px;">Send Message</button>
+            </form>
+          </div>
+
+          <!-- Success state -->
+          <div class="card text-center" style="padding: 60px 40px; display: none;" id="success-container">
+            <div style="font-size: 48px; margin-bottom: 20px;">✅</div>
+            <h2 style="font-size: 24px; margin-bottom: 12px;">Message Sent Successfully!</h2>
+            <p style="font-size: 14px; color: var(--text-slate); max-width: 400px; margin: 0 auto 24px;">
+              Thank you for contacting the Cathedral. A member of our administration office will review and respond to your enquiry shortly.
+            </p>
+            <button onclick="resetContactForm()" class="btn btn-outline">Send Another Message</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer Injection Point -->
+  <div id="footer-root"></div>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="components.js"></script>
+  <script>
+    function handleContactSubmit(e) {
+      e.preventDefault();
+      
+      // Save metric
+      window.CathedralDB.trackMetric('formSubmissions');
+
+      // Swap view
+      document.getElementById('form-container').style.display = 'none';
+      document.getElementById('success-container').style.display = 'block';
+
+      // Reset form fields
+      document.getElementById('contact-form').reset();
+    }
+
+    function resetContactForm() {
+      document.getElementById('success-container').style.display = 'none';
+      document.getElementById('form-container').style.display = 'block';
+    }
+
+    function trackWhatsappClick() {
+      window.CathedralDB.trackMetric('whatsappClicks');
+    }
+  </script>
+</body>
+</html>
